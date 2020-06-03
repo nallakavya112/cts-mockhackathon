@@ -1,0 +1,47 @@
+package memoryparser;
+import java.io.*;
+import java.util.*;
+import org.json.simple.*;
+public class CpuValues {
+		public static void main(String args[]) {
+			try {
+				FileReader fr = new FileReader("C:\\Users\\HP\\Desktop\\Memory2.txt");
+				BufferedReader br = new BufferedReader(fr);
+				String line;
+				int i = 1;
+				float sum = 0;
+				float max = 0;
+
+				JSONObject values = new JSONObject();
+				JSONObject fjson = new JSONObject();
+				JSONObject stransaction = new JSONObject();
+				JSONArray farray = new JSONArray();
+				while ((line = br.readLine()) != null) {
+					String splitvalues[] = line.split("\\s+");
+					float fval = Float.parseFloat(splitvalues[8]);
+					if (fval > max)
+						max = fval;
+					sum = sum + fval;
+					String seconds = i + "s";
+					values.put(seconds, splitvalues[8].toString());
+					i++;
+				}
+				float avg = (float) sum / i;
+				fjson.put("values", values);
+				fjson.put("maxcpu", (String.format("%.2f", max)));
+				fjson.put("avgcpu", (String.format("%.2f", avg)));
+				stransaction.put("sampletransaction", fjson);
+				farray.add(stransaction);
+				System.out.println(farray);
+				FileWriter file = new FileWriter("output.json");
+				file.write(farray.toJSONString());
+				file.close();
+				fr.close();
+			} catch (Exception e) {
+				System.out.println(e);
+			}
+		}
+	}
+
+
+
