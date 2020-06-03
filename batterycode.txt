@@ -1,0 +1,38 @@
+package com.programs;
+import java.io.*;
+import java.util.*;
+import org.json.simple.*;
+public class battery {
+ 
+	 public static void main(String args[]) {
+		 		try {
+		 			FileReader fr = new FileReader("C:\\Users\\HP\\Desktop\\battery.txt");
+		 			BufferedReader br = new BufferedReader(fr);
+		 			String line;
+		 			JSONObject val = new JSONObject();
+		 			String act = null;
+		 			String drain = null;
+		 			while ((line = br.readLine()) != null) {
+		 				if (line.contains("Foreground activities:")) {
+		 					act = line.replaceAll("    Foreground activities: ", "");
+		 				}
+
+		 				if (line.contains("Uid u0a202:")) {
+		 					String splitvalues[] = line.split("\\s+");
+		 					drain = splitvalues[3];
+		 				}
+		 			}
+
+		 			val.put("Foreground_time", act);
+		 			val.put("Battery_percentage", (Float.parseFloat(drain) / 1000));
+		 			val.put("Battery_drain", drain);
+		 			System.out.println(val);
+		 			FileWriter file = new FileWriter("output1.json");
+		 			file.write(val.toJSONString());
+		 			file.close();
+		 			fr.close();
+		 		} catch (Exception e) {
+		 			System.out.println(e);
+		 		}
+		 	}
+		 }
